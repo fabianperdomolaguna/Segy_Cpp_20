@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\utilities.ixx" />
+    <ClCompile Include="Source\segy.ixx" />
+    <ClCompile Include="Source\segy_construct.ixx" />
+    <ClCompile Include="Source\segy_textheader.ixx" />
+    <ClCompile Include="Source\segy_traceheader.ixx" />
+    <ClCompile Include="Source\bytes.ixx" />
+    <ClCompile Include="Source\bytes_read.ixx" />
+  </ItemGroup>
+</Project>
