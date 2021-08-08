@@ -28,9 +28,9 @@ void copy_write_buffers(std::fstream& ifstream, std::fstream& ofstream, int quot
 
 void chrono_execution() {
 	auto start = std::chrono::high_resolution_clock::now();
-	auto elapsed = std::chrono::high_resolution_clock::now() - start;
-	uint64_t microseconds = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
-	std::cout << microseconds;
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+	std::cout << time_span * 1000 << "ms" << std::endl;
 }
 
 export{

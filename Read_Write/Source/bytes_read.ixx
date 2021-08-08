@@ -16,6 +16,14 @@ export namespace bytes {
 		return value;
 	}
 
+	uint32_t read_ui32(std::fstream& file_stream) {
+		char temp[4];
+		file_stream.read(temp, 4);
+		uint32_t value = ((unsigned char)temp[0] << 24) + ((unsigned char)temp[1] << 16) + 
+			((unsigned char)temp[2] << 8) + (unsigned char)temp[3];
+		return value;
+	}
+
 	int16_t read_i16(std::fstream& file_stream) {
 		char temp[2];
 		file_stream.read(temp, 2);

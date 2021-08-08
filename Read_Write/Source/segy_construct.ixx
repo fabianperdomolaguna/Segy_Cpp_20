@@ -15,6 +15,7 @@ export struct SegyFile {
 	std::streamsize filesize{};
 	uint16_t number_samples{};
 	int16_t data_format{};
+	uint16_t data_bytes{};
 	uint64_t number_traces{};
 };
 
@@ -33,11 +34,15 @@ int16_t get_data_format(std::fstream& file_stream) {
 	return bytes::read_ui16(file_stream);
 }
 
-uint64_t get_number_traces(std::streamsize filesize, uint16_t number_samples, int16_t data_format) {
-	std::unordered_map<int16_t, uint64_t> format{ {1,4},{2,4},{3,2},{4,4},{5,4},{6,8},
+uint16_t get_data_bytes(int16_t data_format) {
+	std::unordered_map<int16_t, uint16_t> format{ {1,4},{2,4},{3,2},{4,4},{5,4},{6,8},
 		{7,3},{8,1},{9,8},{10,4},{11,2},{12,8},{15,3},{16,1} };
-	return (filesize - 3600) / (240 + static_cast<uint64_t>(number_samples)
-		* format[data_format]);
+	return format[data_format];
+}
+
+uint64_t get_number_traces(std::streamsize filesize, uint16_t number_samples, uint16_t data_bytes) {
+	return (filesize - 3600) / (240 + static_cast<uint64_t>(number_samples) 
+		* static_cast<uint64_t>(data_bytes));
 }
 
 //I=i32 - U=ui32 - S=i16 - V=ui16 - 8=ui8
@@ -68,8 +73,9 @@ export namespace segy {
 		segy_struct.filesize = get_filesize(file_stream);
 		segy_struct.number_samples = get_number_samples(file_stream);
 		segy_struct.data_format = get_data_format(file_stream);
+		segy_struct.data_bytes = get_data_bytes(segy_struct.data_format);
 		segy_struct.number_traces = get_number_traces(segy_struct.filesize, segy_struct.number_samples,
-			segy_struct.data_format);
+			segy_struct.data_bytes);
 		close_file(file_stream);
 		return segy_struct;
 	}
