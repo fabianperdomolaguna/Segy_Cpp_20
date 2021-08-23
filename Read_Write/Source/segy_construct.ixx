@@ -31,7 +31,7 @@ uint16_t get_number_samples(std::fstream& file_stream) {
 
 int16_t get_data_format(std::fstream& file_stream) {
 	file_stream.seekg(3224, std::ios::beg);
-	return bytes::read_ui16(file_stream);
+	return bytes::read_i16(file_stream);
 }
 
 uint16_t get_data_bytes(int16_t data_format) {
@@ -47,7 +47,7 @@ uint64_t get_number_traces(std::streamsize filesize, uint16_t number_samples, ui
 
 //I=i32 - U=ui32 - S=i16 - V=ui16 - 8=ui8
 std::vector<int32_t> get_main_params(std::fstream& file_stream) {
-	std::map<uint16_t, char> bytes_position{ {3204,'I'},{3212,'S'},{3216,'V'},
+	std::map<uint16_t, char> bytes_position = { {3204,'I'},{3212,'S'},{3216,'V'},
 		{3228,'S'},{3254,'S'},{3256,'S'},{3500,'8'},{3501,'8'} };
 	std::vector<int32_t> main_params;
 	for (auto kv : bytes_position) {
@@ -102,7 +102,7 @@ export namespace segy {
 		auto params = get_main_params(file_stream);
 		std::cout << std::format("{:-^68}\n", "SEG-Y Info");
 		std::cout << std::format("{:>34} {}\n", "Filename:", segy_struct.filename);
-		std::cout << std::format("{:>34} {:.2f} MB\n", "Filesize:", segy_struct.filesize / 1000000.f);
+		std::cout << std::format("{:>34} {:.2f} MB\n", "Filesize:", static_cast<double>(segy_struct.filesize) / 1000000.);
 		std::cout << std::format("{:>34} {}\n", "Line number:", params[0]);
 		std::cout << std::format("{:>34} {}\n", "Number of data traces per record:", params[1]);
 		std::cout << std::format("{:>34} {} (us)\n", "Sample interval:", params[2]);
@@ -113,8 +113,8 @@ export namespace segy {
 		std::cout << std::format("{:>34} {} ({})\n", "Signal polarity:", params[5], polarity[params[5]]);
 		std::cout << std::format("{:>34} {}.{}\n", "SEG-Y Rev:", params[6], params[7]);
 		std::cout << std::format("{:>34} {}\n", "Number of traces:", segy_struct.number_traces);
-		std::cout << std::format("{:>34} {} (s)\n", "Time length:", (params[2] *
-			(segy_struct.number_samples - 1.f)) / 1000000.f);
+		std::cout << std::format("{:>34} {} (s)\n", "Time length:", static_cast<float>(params[2] *
+			static_cast<int32_t>(segy_struct.number_samples - 1)) / 1000000.f);
 
 		close_file(file_stream);
 	}

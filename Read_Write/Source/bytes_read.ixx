@@ -49,10 +49,10 @@ export namespace bytes {
 		unsigned long bytes;
 		file_stream.read((char*)&bytes, 4);
 		swap4_bytes(bytes);
-		int sign = (bytes >> 31); bytes <<= 1;
-		int exponent = (bytes >> 25); bytes <<= 7;
-		float mantissa = (bytes >> 8) / (16777216.f);
-		return (1 - 2 * sign) * mantissa * std::pow(16.f, static_cast<float>(exponent - 64));
+		int sign = static_cast<int>(bytes >> 31); bytes <<= 1;
+		int exponent = static_cast<int>(bytes >> 25); bytes <<= 7;
+		float mantissa = static_cast<float>(bytes >> 8) / (16777216.f);
+		return static_cast<float>(1 - 2 * sign) * mantissa * std::pow(16.f, static_cast<float>(exponent - 64));
 	}
 
 }

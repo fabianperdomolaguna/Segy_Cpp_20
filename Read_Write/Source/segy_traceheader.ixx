@@ -2,8 +2,9 @@
 #include <iostream>
 #include <format>
 #include <fstream>
-#include <unordered_map>
-#include <future>
+#include <utility>
+#include <sstream>
+#include <ranges>
 
 import utilities;
 import bytes;
@@ -27,10 +28,17 @@ std::vector<T> traceheader_iter(SegyFile& segy_struct, uint16_t byte_pos){
 }
 
 auto get_coord(SegyFile& segy_struct) {
-	std::vector<std::vector<uint32_t>> coordinates(2, std::vector<uint32_t>(segy_struct.number_traces));
-	auto f = std::async(traceheader_iter<uint32_t, &bytes::read_ui32>, std::ref(segy_struct), 72);
-	coordinates[1] = std::move(traceheader_iter<uint32_t, &bytes::read_ui32>(segy_struct, 76));
-	coordinates[0] = std::move(f.get());
+	std::vector<std::pair<uint32_t, uint32_t>> coordinates;
+	uint16_t scalar = 240 - 8 + segy_struct.number_samples * segy_struct.data_bytes;
+	auto file_stream = open_file(segy_struct.filename, 'i');
+	file_stream.seekg(3600 + 72, std::ios::beg);
+	uint32_t X, Y;
+	for (int i = 0; i < segy_struct.number_traces; i++) {
+		X = bytes::read_ui32(file_stream); Y = bytes::read_ui32(file_stream);
+		coordinates.push_back(std::make_pair(X,Y));
+		file_stream.seekg(scalar, std::ios::cur);
+	}
+	close_file(file_stream);
 	return coordinates;
 }
 
@@ -42,8 +50,30 @@ export namespace segy {
 		auto coordinates = get_coord(segy_struct);
 		std::cout << std::format("{:-^30}\n", "");
 		std::cout << std::format("{:^15} {:^15}\n", "X Coordinate", "Y Coordinate");
-		for (int i = 0; i < segy_struct.number_traces; i++)
-			std::cout << std::format("{:^15} {:^15}\n", coordinates[0][i], coordinates[1][i]);
+		for (auto& pair : coordinates)
+			std::cout << std::format("{:^15} {:^15}\n", pair.first, pair.second);
+	}
+
+	void save_coord(SegyFile& segy_struct) {
+		auto coordinates = get_coord(segy_struct);
+		auto file_stream = open_file(get_user_input("Enter filename: "), 'o');
+		file_stream << "X" << "," << "Y" << std::endl;
+		for (auto& pair : coordinates)
+			file_stream << pair.first << "," << pair.second << std::endl;
+		close_file(file_stream);
+	}
+
+	void replace_coord(SegyFile& segy_struct) {
+		auto coordinates = read_twocol_csv<uint32_t>("Enter coordinates file: ");
+		uint16_t scalar = 240 - 8 + segy_struct.number_samples * segy_struct.data_bytes;
+		auto segy_file = open_file(segy_struct.filename, 't');
+		segy_file.seekg(3600 + 72, std::ios::beg);
+		for (auto& pair : coordinates) {
+			bytes::write_ui32(segy_file, pair.first);
+			bytes::write_ui32(segy_file, pair.second);
+			segy_file.seekg(scalar, std::ios::cur);
+		}
+		close_file(segy_file);
 	}
 
 >>>>>>> 08af693 (Function Added: XY Coordinates reader and print)

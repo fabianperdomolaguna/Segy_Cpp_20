@@ -9,5 +9,6 @@
     <ClCompile Include="Source\segy_traceheader.ixx" />
     <ClCompile Include="Source\bytes.ixx" />
     <ClCompile Include="Source\bytes_read.ixx" />
+    <ClCompile Include="Source\bytes_write.ixx" />
   </ItemGroup>
 </Project>

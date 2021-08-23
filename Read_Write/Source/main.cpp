@@ -24,10 +24,14 @@ void trace_header_menu(SegyFile& segy_struct) {
 	clear_screen();
 	std::cout << std::format("{:-^30}\n", "Menu");
 	std::cout << std::format("{}\n", "1. Print XY coordinates");
+	std::cout << std::format("{}\n", "2. Save XY coordinates");
+	std::cout << std::format("{}\n", "3. Replace coordinates");
 	std::cout << std::format("{:-^30}\n", "");
 
 	switch (get_user_option<uint16_t>("Enter option number: ")) {
 	case 1: segy::print_coord(segy_struct); break;
+	case 2: segy::save_coord(segy_struct); break;
+	case 3: segy::replace_coord(segy_struct); break;
 	default: std::cout << "You enter an invalid option"; exit(1);
 	}
 }
