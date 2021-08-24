@@ -5,6 +5,7 @@
 #include <utility>
 #include <sstream>
 #include <ranges>
+#include <thread>
 
 import utilities;
 import bytes;
@@ -42,6 +43,18 @@ auto get_coord(SegyFile& segy_struct) {
 	return coordinates;
 }
 
+void write_coord(std::string& filename, std::vector<std::pair<uint32_t, uint32_t>>& coord, 
+	uint16_t scalar, uint16_t byte_pos) {
+	auto segy_file = open_file(filename, 't');
+	segy_file.seekg(3600 + byte_pos, std::ios::beg);
+	for (auto& pair : coord) {
+		bytes::write_ui32(segy_file, pair.first);
+		bytes::write_ui32(segy_file, pair.second);
+		segy_file.seekg(scalar, std::ios::cur);
+	}
+	close_file(segy_file);
+}
+
 export namespace segy {
 
 <<<<<<< HEAD
@@ -66,14 +79,9 @@ export namespace segy {
 	void replace_coord(SegyFile& segy_struct) {
 		auto coordinates = read_twocol_csv<uint32_t>("Enter coordinates file: ");
 		uint16_t scalar = 240 - 8 + segy_struct.number_samples * segy_struct.data_bytes;
-		auto segy_file = open_file(segy_struct.filename, 't');
-		segy_file.seekg(3600 + 72, std::ios::beg);
-		for (auto& pair : coordinates) {
-			bytes::write_ui32(segy_file, pair.first);
-			bytes::write_ui32(segy_file, pair.second);
-			segy_file.seekg(scalar, std::ios::cur);
-		}
-		close_file(segy_file);
+		std::thread t1(write_coord, std::ref(segy_struct.filename), std::ref(coordinates), scalar, 72);
+		write_coord(segy_struct.filename, coordinates, scalar, 80);
+		t1.join();
 	}
 
 >>>>>>> 08af693 (Function Added: XY Coordinates reader and print)
