@@ -5,7 +5,6 @@
 #include <utility>
 #include <sstream>
 #include <ranges>
-#include <thread>
 
 import utilities;
 import bytes;
@@ -15,7 +14,7 @@ import :construct;
 
 template <typename T, T f(std::fstream&)>
 std::vector<T> traceheader_iter(SegyFile& segy_struct, uint16_t byte_pos){
-	uint16_t bytes_read = (typeid(T) == typeid(unsigned int)) ? 4 : 2;
+	uint16_t bytes_read = sizeof(T);
 	uint16_t scalar = 240 - bytes_read + segy_struct.number_samples * segy_struct.data_bytes;
 	std::vector<T> data;
 	auto file_stream = open_file(segy_struct.filename, 'i');
@@ -57,8 +56,6 @@ void write_coord(std::string& filename, std::vector<std::pair<uint32_t, uint32_t
 
 export namespace segy {
 
-<<<<<<< HEAD
-=======
 	void print_coord(SegyFile& segy_struct) {
 		auto coordinates = get_coord(segy_struct);
 		std::cout << std::format("{:-^30}\n", "");
@@ -77,12 +74,10 @@ export namespace segy {
 	}
 
 	void replace_coord(SegyFile& segy_struct) {
-		auto coordinates = read_twocol_csv<uint32_t>("Enter coordinates file: ");
+		auto coordinates = read_twocol_csv<uint32_t>("Enter coordinates filename: ");
 		uint16_t scalar = 240 - 8 + segy_struct.number_samples * segy_struct.data_bytes;
-		std::thread t1(write_coord, std::ref(segy_struct.filename), std::ref(coordinates), scalar, 72);
+		write_coord(segy_struct.filename, coordinates, scalar, 72);
 		write_coord(segy_struct.filename, coordinates, scalar, 80);
-		t1.join();
 	}
 
->>>>>>> 08af693 (Function Added: XY Coordinates reader and print)
 }

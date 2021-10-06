@@ -89,18 +89,18 @@ export{
 
 	template <typename T>
 	std::vector<std::pair<T, T>> read_twocol_csv(std::string message) {
+		std::vector<std::pair<T, T>> pairs;
 		auto file_stream = open_file(get_user_input(message), 'i');
-		std::vector<std::pair<T, T>> coordinates;
 		T X, Y; char comma; std::string line;
 		std::getline(file_stream, line);
 		while (!file_stream.eof()) {
 			std::getline(file_stream, line);
 			std::stringstream line_stream(line);
 			line_stream >> X >> comma >> Y;
-			coordinates.push_back(std::make_pair(X, Y));
+			pairs.push_back(std::make_pair(X, Y));
 		}
 		close_file(file_stream);
-		return coordinates;
+		return pairs;
 	}
 
 }

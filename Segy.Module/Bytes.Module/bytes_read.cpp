@@ -2,9 +2,8 @@
 
 export module bytes:read;
 
-void swap4_bytes(unsigned long& bytes) {
-	bytes = ((bytes >> 24) | (bytes << 24) |
-		((bytes >> 8) & 0xff00) | ((bytes & 0xff00) << 8));
+uint32_t swap4_bytes(unsigned long& bytes) {
+	return ((bytes >> 24) | (bytes << 24) | ((bytes >> 8) & 0xff00) | ((bytes & 0xff00) << 8));
 }
 
 export namespace bytes {
@@ -48,10 +47,10 @@ export namespace bytes {
 	float read_ibm(std::fstream& file_stream) {
 		unsigned long bytes;
 		file_stream.read((char*)&bytes, 4);
-		swap4_bytes(bytes);
-		int sign = static_cast<int>(bytes >> 31); bytes <<= 1;
-		int exponent = static_cast<int>(bytes >> 25); bytes <<= 7;
-		float mantissa = static_cast<float>(bytes >> 8) / (16777216.f);
+		auto bytes_swap = swap4_bytes(bytes);
+		int sign = static_cast<int>(bytes_swap >> 31); bytes_swap <<= 1;
+		int exponent = static_cast<int>(bytes_swap >> 25); bytes_swap <<= 7;
+		float mantissa = static_cast<float>(bytes_swap >> 8) / (16777216.f);
 		return static_cast<float>(1 - 2 * sign) * mantissa * std::pow(16.f, static_cast<float>(exponent - 64));
 	}
 
