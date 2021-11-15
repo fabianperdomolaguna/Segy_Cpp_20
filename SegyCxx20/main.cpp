@@ -36,18 +36,32 @@ void trace_header_menu(SegyFile& segy_struct) {
 	}
 }
 
+void trace_data_menu(SegyFile& segy_struct) {
+	clear_screen();
+	std::cout << std::format("{:-^30}\n", "Menu");
+	std::cout << std::format("{}\n", "1. Print Trace");
+	std::cout << std::format("{:-^30}\n", "");
+
+	switch (get_user_option<uint16_t>("Enter option number: ")) {
+	case 1: segy::print_trace(segy_struct); break;
+	default: std::cout << "You enter an invalid option"; exit(1);
+	}
+}
+
 void main_menu(SegyFile& segy_struct) {
 	clear_screen();
 	std::cout << std::format("{:-^30}\n", "Main Menu");
 	std::cout << std::format("{}\n", "1. SEG-Y file summary");
 	std::cout << std::format("{}\n", "2. Textual header");
 	std::cout << std::format("{}\n", "3. Trace header");
+	std::cout << std::format("{}\n", "4. Trace data");
 	std::cout << std::format("{:-^30}\n", "");
 
 	switch (get_user_option<uint16_t>("Enter option number: ")) {
 	case 1: segy::print_main_info(segy_struct); break;
 	case 2: textual_header_menu(segy_struct); break;
 	case 3: trace_header_menu(segy_struct); break;
+	case 4: trace_data_menu(segy_struct); break;
 	default: std::cout << "You enter an invalid option"; exit(1);
 	}
 }

@@ -9,5 +9,6 @@
     <ClCompile Include="Bytes.Module\bytes_read.cpp" />
     <ClCompile Include="Bytes.Module\bytes_write.cpp" />
     <ClCompile Include="Utilities.Module\utilities.cpp" />
+    <ClCompile Include="segy_tracedata.cpp" />
   </ItemGroup>
 </Project>

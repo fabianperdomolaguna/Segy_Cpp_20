@@ -1,4 +1,3 @@
-#include <compare>
 #include <iostream>
 #include <format>
 #include <fstream>
