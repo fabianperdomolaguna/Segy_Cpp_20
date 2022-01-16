@@ -1,6 +1,6 @@
 #include <fstream>
 
-export module bytes:write;
+export module bytes.write;
 
 export namespace bytes {
 

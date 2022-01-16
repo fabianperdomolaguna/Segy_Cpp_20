@@ -5,11 +5,10 @@
 #include <algorithm>
 #include <ranges>
 
-import utilities;
-import bytes;
+export module segy.textheader;
 
-export module segy:textheader;
-import :construct;
+import segy.construct;
+import utilities;
 
 const unsigned char E2A[256] = {
 	0,1,2,3,156,9,134,127,151,141,142,11,12,13,14,15,
@@ -50,7 +49,7 @@ const unsigned char A2E[256]{
 };
 
 std::vector<char> get_textual_header(std::string& filename) {
-	auto file_stream = open_file(filename, 'i');
+	std::fstream file_stream = open_file(filename, 'i');
 	char ebcdic_header[3200];
 	file_stream.read(ebcdic_header, 3200);
 	std::vector<char> ascii_header;
@@ -64,19 +63,19 @@ std::vector<char> get_textual_header(std::string& filename) {
 export namespace segy {
 
 	void print_textual_header(SegyFile& segy_struct) {
-		auto ascii_header = get_textual_header(segy_struct.filename);
+		std::vector<char> ascii_header = get_textual_header(segy_struct.filename);
 		std::cout << std::format("{:-^80}\n", "Textual Header");
 		std::vector<char>::iterator it = ascii_header.begin();
 		while (it < ascii_header.end()) {
 			std::copy(it, it + 80, std::ostream_iterator<char>(std::cout));
-			std::cout << std::endl;
+			std::cout << "\n";
 			std::advance(it, 80);
 		}
 	}
 
 	void save_textual_header(SegyFile& segy_struct) {
-		auto ascii_header = get_textual_header(segy_struct.filename);
-		auto file_stream = open_file(get_user_input("Enter filename: "), 'o');
+		std::vector<char> ascii_header = get_textual_header(segy_struct.filename);
+		auto file_stream = open_file(get_user_input("Enter filename: "), 'w');
 		std::vector<char>::iterator it = ascii_header.begin();
 		while (it < ascii_header.end()) {
 			std::copy(it, it + 80, std::ostream_iterator<char>(file_stream));
@@ -87,13 +86,13 @@ export namespace segy {
 	}
 
 	void replace_textual_header(SegyFile& segy_struct) {
-		auto header_file = open_file(get_user_input("Enter header filename: "), 'i');
-		auto segy_file = open_file(segy_struct.filename, 't');
+		std::fstream header_file = open_file(get_user_input("Enter header filename: "), 'i');
+		std::fstream segy_file = open_file(segy_struct.filename, 'o');
 		std::string line;
 		while (!header_file.eof()) {
 			std::getline(header_file, line);
 			std::for_each(line.begin(), line.end(),
-				[&](auto& elem) {segy_file << A2E[(int)elem]; });
+				[&](char& elem) {segy_file << A2E[(int)elem]; });
 		}
 		close_file(header_file);
 		close_file(segy_file);

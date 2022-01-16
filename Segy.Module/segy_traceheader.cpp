@@ -1,20 +1,18 @@
 #include <iostream>
+#include <vector>
 #include <format>
 #include <fstream>
-#include <utility>
-#include <sstream>
-#include <ranges>
 
+export module segy.traceheader;
+
+import segy.construct;
 import utilities;
 import bytes;
-
-export module segy:traceheader;
-import :construct;
 
 template <typename T, T f(std::fstream&)>
 std::vector<T> traceheader_iter(SegyFile& segy_struct, uint16_t byte_pos){
 	uint16_t bytes_read = sizeof(T);
-	uint16_t scalar = 240 - bytes_read + segy_struct.number_samples * segy_struct.data_bytes;
+	uint16_t scalar = 240 - bytes_read + segy_struct.number_samples * segy_struct.number_data_bytes;
 	std::vector<T> data;
 	auto file_stream = open_file(segy_struct.filename, 'i');
 	file_stream.seekg(3600 + byte_pos, std::ios::beg);
@@ -28,7 +26,7 @@ std::vector<T> traceheader_iter(SegyFile& segy_struct, uint16_t byte_pos){
 
 auto get_coord(SegyFile& segy_struct) {
 	std::vector<std::pair<uint32_t, uint32_t>> coordinates;
-	uint16_t scalar = 240 - 8 + segy_struct.number_samples * segy_struct.data_bytes;
+	uint16_t scalar = 240 - 8 + segy_struct.number_samples * segy_struct.number_data_bytes;
 	auto file_stream = open_file(segy_struct.filename, 'i');
 	file_stream.seekg(3600 + 72, std::ios::beg);
 	uint32_t X, Y;
@@ -43,7 +41,7 @@ auto get_coord(SegyFile& segy_struct) {
 
 void write_coord(std::string& filename, std::vector<std::pair<uint32_t, uint32_t>>& coord, 
 	uint16_t scalar, uint16_t byte_pos) {
-	auto segy_file = open_file(filename, 't');
+	auto segy_file = open_file(filename, 'o');
 	segy_file.seekg(3600 + byte_pos, std::ios::beg);
 	for (auto& pair : coord) {
 		bytes::write_ui32(segy_file, pair.first);
@@ -65,7 +63,7 @@ export namespace segy {
 
 	void save_coord(SegyFile& segy_struct) {
 		auto coordinates = get_coord(segy_struct);
-		auto file_stream = open_file(get_user_input("Enter filename: "), 'o');
+		auto file_stream = open_file(get_user_input("Enter filename: "), 'w');
 		file_stream << "X" << "," << "Y" << std::endl;
 		for (auto& pair : coordinates)
 			file_stream << pair.first << "," << pair.second << std::endl;
@@ -74,7 +72,7 @@ export namespace segy {
 
 	void replace_coord(SegyFile& segy_struct) {
 		auto coordinates = read_twocol_csv<uint32_t>("Enter coordinates filename: ");
-		uint16_t scalar = 240 - 8 + segy_struct.number_samples * segy_struct.data_bytes;
+		uint16_t scalar = 240 - 8 + segy_struct.number_samples * segy_struct.number_data_bytes;
 		write_coord(segy_struct.filename, coordinates, scalar, 72);
 		write_coord(segy_struct.filename, coordinates, scalar, 80);
 	}

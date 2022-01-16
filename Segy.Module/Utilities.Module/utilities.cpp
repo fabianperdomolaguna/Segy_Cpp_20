@@ -1,9 +1,7 @@
-#include <cstdlib>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <chrono>
-#include <string>
 
 export module utilities;
 
@@ -44,11 +42,11 @@ export{
 	}
 
 	void clear_screen(){
-	#ifdef _WIN32
-		std::system("cls");
-	#else
-		std::system("clear");
-	#endif
+		#ifdef _WIN32
+			std::system("cls");
+		#else
+			std::system("clear");
+		#endif
 	}
 
 	std::string get_user_input(std::string message) {
@@ -66,14 +64,14 @@ export{
 		return selection;
 	}
 
-	//i=read_file - o=write_new_file - t=overwrite_file
+	//i = read_file *** w = write_new_file *** o = overwrite_file
 	std::fstream open_file(std::string filename, char option) {
 		std::fstream file_stream;
 		switch (option)
 		{
 		case 'i': file_stream.open(filename.c_str(), std::fstream::in | std::ios::binary); break;
-		case 'o': file_stream.open(filename.c_str(), std::fstream::out | std::ios::binary); break;
-		case 't': file_stream.open(filename.c_str(), std::ios::binary | std::fstream::out | std::ios::in); break;
+		case 'w': file_stream.open(filename.c_str(), std::fstream::out | std::ios::binary); break;
+		case 'o': file_stream.open(filename.c_str(), std::ios::binary | std::fstream::out | std::ios::in); break;
 		}
 
 		if (file_stream.fail()) {

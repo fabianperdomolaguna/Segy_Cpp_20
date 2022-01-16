@@ -1,4 +1,4 @@
 export module bytes;
 
-export import :read;
-export import :write;
+export import bytes.read;
+export import bytes.write;

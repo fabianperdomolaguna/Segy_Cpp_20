@@ -4,10 +4,10 @@
 #include <fstream>
 #include <algorithm>
 
-import bytes;
+export module segy.tracedata;
 
-export module segy:tracedata;
-import :construct;
+import segy.construct;
+import bytes.read;
 
 template <typename T>
 auto read_traces(SegyFile& segy_struct) {

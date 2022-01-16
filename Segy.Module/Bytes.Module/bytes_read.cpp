@@ -1,6 +1,6 @@
 #include <fstream>
 
-export module bytes:read;
+export module bytes.read;
 
 uint32_t swap4_bytes(unsigned long& bytes) {
 	return ((bytes >> 24) | (bytes << 24) | ((bytes >> 8) & 0xff00) | ((bytes & 0xff00) << 8));

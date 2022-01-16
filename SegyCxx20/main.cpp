@@ -68,6 +68,6 @@ void main_menu(SegyFile& segy_struct) {
 
 int main() {
 	clear_screen();
-	auto segy_struct = segy::segy_struct_construct();
+	SegyFile segy_struct;
 	main_menu(segy_struct);
 }
