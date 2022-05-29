@@ -1,3 +1,5 @@
+module;
+
 #include <fstream>
 
 export module bytes.write;

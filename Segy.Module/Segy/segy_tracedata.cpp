@@ -1,3 +1,5 @@
+module;
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -8,6 +10,7 @@ export module segy.tracedata;
 
 import segy.construct;
 import bytes.read;
+import utilities;
 
 template <typename T>
 auto read_traces(SegyFile& segy_struct) {

@@ -1,3 +1,5 @@
+module;
+
 #include <string>
 #include <iostream>
 #include <format>
@@ -6,8 +8,8 @@
 
 export module segy.construct;
 
-import utilities;
 import bytes.read;
+import utilities;
 
 std::unordered_map<int16_t, uint16_t> format_number_bytes{ {1,4},{2,4},{3,2},{4,4},{5,4},{6,8},
 		{7,3},{8,1},{9,8},{10,4},{11,2},{12,8},{15,3},{16,1} };

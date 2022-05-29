@@ -1,14 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="segy.cpp" />
-    <ClCompile Include="segy_construct.cpp" />
-    <ClCompile Include="segy_textheader.cpp" />
-    <ClCompile Include="segy_traceheader.cpp" />
-    <ClCompile Include="Bytes.Module\bytes.cpp" />
-    <ClCompile Include="Bytes.Module\bytes_read.cpp" />
-    <ClCompile Include="Bytes.Module\bytes_write.cpp" />
-    <ClCompile Include="Utilities.Module\utilities.cpp" />
-    <ClCompile Include="segy_tracedata.cpp" />
+    <Filter Include="bytes">
+      <UniqueIdentifier>{745ab8c7-6a2a-411c-b4b7-9a977075856a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utilities">
+      <UniqueIdentifier>{68a72204-ab54-4244-9931-8efc20744d2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="segy">
+      <UniqueIdentifier>{ad4d5440-303a-4561-8ad0-c5f326208d0b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Bytes\bytes.cpp">
+      <Filter>bytes</Filter>
+    </ClCompile>
+    <ClCompile Include="Bytes\bytes_read.cpp">
+      <Filter>bytes</Filter>
+    </ClCompile>
+    <ClCompile Include="Bytes\bytes_write.cpp">
+      <Filter>bytes</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\utilities.cpp">
+      <Filter>utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Segy\segy.cpp">
+      <Filter>segy</Filter>
+    </ClCompile>
+    <ClCompile Include="Segy\segy_construct.cpp">
+      <Filter>segy</Filter>
+    </ClCompile>
+    <ClCompile Include="Segy\segy_textheader.cpp">
+      <Filter>segy</Filter>
+    </ClCompile>
+    <ClCompile Include="Segy\segy_tracedata.cpp">
+      <Filter>segy</Filter>
+    </ClCompile>
+    <ClCompile Include="Segy\segy_traceheader.cpp">
+      <Filter>segy</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,3 +1,5 @@
+module;
+
 #include <iostream>
 #include <vector>
 #include <format>
@@ -6,8 +8,8 @@
 export module segy.traceheader;
 
 import segy.construct;
-import utilities;
 import bytes;
+import utilities;
 
 template <typename T, T f(std::fstream&)>
 std::vector<T> traceheader_iter(SegyFile& segy_struct, uint16_t byte_pos){

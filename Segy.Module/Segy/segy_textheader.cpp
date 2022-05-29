@@ -1,3 +1,5 @@
+module;
+
 #include <iostream>
 #include <format>
 #include <fstream>
@@ -9,6 +11,7 @@ export module segy.textheader;
 
 import segy.construct;
 import utilities;
+
 
 const unsigned char E2A[256] = {
 	0,1,2,3,156,9,134,127,151,141,142,11,12,13,14,15,
